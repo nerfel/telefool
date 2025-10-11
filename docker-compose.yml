@@ -1,0 +1,13 @@
+services:
+  postgres:
+    container_name: postgres_go_bot
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      PGDATA: /data/postgres
+    volumes:
+      - ./docker/volumes/pg_data:/data/postgres:rw
+    ports:
+      - ${DB_PORT}:5432
