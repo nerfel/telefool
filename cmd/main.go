@@ -31,6 +31,7 @@ func initBot(conf *configs.Config) *tgbotapi.BotAPI {
 	}
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
+	bot.Request(&tgbotapi.DeleteWebhookConfig{DropPendingUpdates: true})
 	wh, _ := tgbotapi.NewWebhook(conf.BotWebhookUrl)
 
 	_, err = bot.Request(wh)
