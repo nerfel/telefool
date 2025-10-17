@@ -33,6 +33,8 @@ func (mh *UpdateHandler) Handle() {
 	r := router.NewUpdateRouter(mh.Config, mh.Bot)
 
 	stack := middleware.Chain(
+		middleware.PreventAddGroup,
+		middleware.IgnoreEmpty,
 		middleware.Logging,
 	)
 	handle := stack(func(update tgbotapi.Update, config *configs.Config, bot *tgbotapi.BotAPI) {

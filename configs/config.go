@@ -13,6 +13,7 @@ type Config struct {
 	BotToken      string
 	HttpPort      string
 	BotWebhookUrl string
+	AdminUserName string
 }
 
 type DbConfig struct {
@@ -51,5 +52,6 @@ func LoadConfig() *Config {
 		BotToken:      os.Getenv("BOT_TOKEN"),
 		HttpPort:      os.Getenv("HTTP_PORT"),
 		BotWebhookUrl: os.Getenv("BOT_WEBHOOK_URL"),
+		AdminUserName: os.Getenv("ADMIN_USERNAME"),
 	}
 }
