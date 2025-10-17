@@ -1,8 +1,12 @@
 package middleware
 
-import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+import (
+	"telefool/configs"
 
-type Handler func(update tgbotapi.Update)
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+)
+
+type Handler func(update tgbotapi.Update, config *configs.Config, bot *tgbotapi.BotAPI)
 type Middleware func(Handler) Handler
 
 func Chain(middlewares ...Middleware) Middleware {

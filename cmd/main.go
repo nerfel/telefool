@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 	"telefool/configs"
-	"telefool/internal/message"
+	"telefool/internal/handlers"
+	"telefool/internal/user"
 	"telefool/pkg/db"
-	"telefool/pkg/middleware"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -54,18 +54,23 @@ func initBot(conf *configs.Config) *tgbotapi.BotAPI {
 func main() {
 	conf := configs.LoadConfig()
 	database := db.NewDb(conf)
-	fmt.Println("dbPointer:", database)
 
 	go initHttpServer(conf.HttpPort)
 
 	bot := initBot(conf)
 
-	updates := bot.ListenForWebhook("/")
+	// Repositories
+	userRepository := user.NewUserRepository(database)
 
-	stack := middleware.Chain(middleware.Logging)
-	handler := stack(message.Handle)
+	// Services
+	userService := user.NewUserService(userRepository)
 
-	for update := range updates {
-		handler(update)
-	}
+	// GlobalHandler
+	gmh := handlers.NewUpdateHandler(&handlers.UpdateHandlerDeps{
+		Config:      conf,
+		UserService: userService,
+		Bot:         bot,
+	})
+
+	gmh.Handle()
 }
