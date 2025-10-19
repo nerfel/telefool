@@ -1,39 +1,29 @@
 package router
 
 import (
-	"telefool/configs"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"telefool/pkg/di"
 )
 
-type UpdateContext struct {
-	Update tgbotapi.Update
-	Bot    *tgbotapi.BotAPI
-}
-
 type Route struct {
-	Match  func(ctx *UpdateContext, conf configs.Config) bool
-	Handle func(ctx *UpdateContext)
+	Match  func(ctx *di.UpdateContext) bool
+	Handle func(ctx *di.UpdateContext)
 }
 
 type Router struct {
-	config configs.Config
-	bot    *tgbotapi.BotAPI
 	routes []Route
 }
 
-func NewUpdateRouter(config *configs.Config, bot *tgbotapi.BotAPI) *Router {
-	return &Router{config: *config, bot: bot}
+func NewUpdateRouter() *Router {
+	return &Router{}
 }
 
-func (r *Router) Register(match func(*UpdateContext, configs.Config) bool, handle func(ctx *UpdateContext)) {
+func (r *Router) Register(match func(*di.UpdateContext) bool, handle func(ctx *di.UpdateContext)) {
 	r.routes = append(r.routes, Route{match, handle})
 }
 
-func (r *Router) Handle(update tgbotapi.Update) {
-	ctx := &UpdateContext{Update: update, Bot: r.bot}
+func (r *Router) Serve(ctx *di.UpdateContext) {
 	for _, route := range r.routes {
-		if route.Match(ctx, r.config) {
+		if route.Match(ctx) {
 			route.Handle(ctx)
 			return
 		}

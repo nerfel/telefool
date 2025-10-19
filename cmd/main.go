@@ -70,6 +70,7 @@ func main() {
 		Config:      conf,
 		UserService: userService,
 		Bot:         bot,
+		Router:      router.NewUpdateRouter(),
 	})
 
 	gmh.Handle()
