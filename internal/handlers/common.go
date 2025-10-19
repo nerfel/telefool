@@ -5,7 +5,6 @@ import (
 	"telefool/internal/user"
 	"telefool/pkg/di"
 	"telefool/pkg/middleware"
-	"telefool/pkg/router"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -14,14 +13,14 @@ type UpdateHandlerDeps struct {
 	Config      *configs.Config
 	UserService *user.UserService
 	Bot         *tgbotapi.BotAPI
-	Router      *router.Router
+	Router      di.RouterInterface
 }
 
 type UpdateHandler struct {
 	Config      *configs.Config
 	UserService *user.UserService
 	Bot         *tgbotapi.BotAPI
-	Router      *router.Router
+	Router      di.RouterInterface
 }
 
 func NewUpdateHandler(deps *UpdateHandlerDeps) *UpdateHandler {

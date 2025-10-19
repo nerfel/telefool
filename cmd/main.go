@@ -8,6 +8,7 @@ import (
 	"telefool/internal/handlers"
 	"telefool/internal/user"
 	"telefool/pkg/db"
+	"telefool/pkg/router"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
