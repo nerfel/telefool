@@ -34,26 +34,22 @@ func NewUpdateHandler(deps *UpdateHandlerDeps) *UpdateHandler {
 }
 
 func (gmh *UpdateHandler) Handle() {
-	gmh.Router.Register(CreateUserRoute, CreateUserHandler)
+	gmh.Router.Register(CreateUserRoute, middleware.IsAdmin(CreateUserHandler))
 
 	stack := middleware.Chain(
 		middleware.PreventAddGroup,
 		middleware.IgnoreEmpty,
 		middleware.Logging,
 	)
-	handle := stack(func(update tgbotapi.Update, config *configs.Config, bot *tgbotapi.BotAPI) {
-		gmh.Router.Serve(&di.UpdateContext{
-			Update: update,
-			Bot:    bot,
-			Conf:   config,
-		})
+	handle := stack(func(ctx *di.UpdateContext) {
+		gmh.Router.Serve(ctx)
 	})
 
 	for update := range gmh.Bot.ListenForWebhook("/") {
-		handle(
-			update,
-			gmh.Config,
-			gmh.Bot,
-		)
+		handle(&di.UpdateContext{
+			Update: update,
+			Bot:    gmh.Bot,
+			Conf:   gmh.Config,
+		})
 	}
 }
