@@ -9,11 +9,12 @@ import (
 )
 
 type Config struct {
-	Db            DbConfig
-	BotToken      string
-	HttpPort      string
-	BotWebhookUrl string
-	AdminUserName string
+	Db                DbConfig
+	YandexCloudConfig YandexCloudConfig
+	BotToken          string
+	HttpPort          string
+	BotWebhookUrl     string
+	AdminUserName     string
 }
 
 type DbConfig struct {
@@ -22,6 +23,13 @@ type DbConfig struct {
 	Password string
 	DbName   string
 	Port     string
+}
+
+type YandexCloudConfig struct {
+	Token              string
+	GptModelRequestUrl string
+	GetIamTokenUrl     string
+	IamToken           string
 }
 
 func (conf *DbConfig) GetDsn() string {
@@ -53,5 +61,10 @@ func LoadConfig() *Config {
 		HttpPort:      os.Getenv("HTTP_PORT"),
 		BotWebhookUrl: os.Getenv("BOT_WEBHOOK_URL"),
 		AdminUserName: os.Getenv("ADMIN_USERNAME"),
+		YandexCloudConfig: YandexCloudConfig{
+			Token:              os.Getenv("YANDEX_CLOUD_TOKEN"),
+			GptModelRequestUrl: os.Getenv("GPT_MODEL_REQUEST_URL"),
+			GetIamTokenUrl:     os.Getenv("GET_IAM_TOKEN_URL"),
+		},
 	}
 }
