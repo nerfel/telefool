@@ -26,10 +26,18 @@ type DbConfig struct {
 }
 
 type YandexCloudConfig struct {
-	Token              string
-	GptModelRequestUrl string
-	GetIamTokenUrl     string
-	IamToken           string
+	ModelCompletionOptions *ModelCompletionOptions
+	Token                  string
+	GptModelRequestUrl     string
+	GetIamTokenUrl         string
+	IamToken               string
+	ModelUri               string
+	SystemPrompt           string
+}
+
+type ModelCompletionOptions struct {
+	MaxTokens   int     `json:"maxTokens"`
+	Temperature float64 `json:"temperature"`
 }
 
 func (conf *DbConfig) GetDsn() string {
@@ -62,9 +70,15 @@ func LoadConfig() *Config {
 		BotWebhookUrl: os.Getenv("BOT_WEBHOOK_URL"),
 		AdminUserName: os.Getenv("ADMIN_USERNAME"),
 		YandexCloudConfig: YandexCloudConfig{
+			ModelCompletionOptions: &ModelCompletionOptions{
+				MaxTokens:   150,
+				Temperature: 0.95,
+			},
 			Token:              os.Getenv("YANDEX_CLOUD_TOKEN"),
 			GptModelRequestUrl: os.Getenv("GPT_MODEL_REQUEST_URL"),
 			GetIamTokenUrl:     os.Getenv("GET_IAM_TOKEN_URL"),
+			ModelUri:           os.Getenv("MODEL_URI"),
+			SystemPrompt:       os.Getenv("SYSTEM_PROMPT"),
 		},
 	}
 }

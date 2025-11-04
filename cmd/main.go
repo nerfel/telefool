@@ -8,6 +8,7 @@ import (
 	"telefool/internal/handlers"
 	"telefool/internal/user"
 	"telefool/pkg/db"
+	"telefool/pkg/memory"
 	"telefool/pkg/router"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -72,6 +73,7 @@ func main() {
 		UserService: userService,
 		Bot:         bot,
 		Router:      router.NewUpdateRouter(),
+		Memory:      memory.NewShortTermMemory(100),
 	})
 
 	gmh.Handle()

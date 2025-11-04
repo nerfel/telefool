@@ -21,24 +21,13 @@ func CreateUserRoute(ctx *di.UpdateContext) bool {
 	if len(matches) < 2 {
 		return false
 	}
+	ctx.RoutePayload = matches[1]
 
 	return true
 }
 
 func CreateUserHandler(ctx *di.UpdateContext) {
-	textMessage := strings.TrimSpace(ctx.Update.Message.Text)
-
-	createUserRegexp := regexp.MustCompile(createUserRegexpString)
-	if !createUserRegexp.MatchString(textMessage) {
-		return
-	}
-
-	matches := createUserRegexp.FindStringSubmatch(textMessage)
-	if len(matches) < 2 {
-		return
-	}
-
-	userName := strings.TrimPrefix(matches[1], "@")
-	fmt.Println(userName)
+	userName := ctx.RoutePayload
+	fmt.Println("route payload: ", userName)
 
 }

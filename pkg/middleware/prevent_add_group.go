@@ -22,7 +22,7 @@ func PreventAddGroup(next Handler) Handler {
 		}
 
 		if old.Status == "left" && newm.Status == "member" {
-			if ctx.Update.MyChatMember.From.UserName != ctx.Conf.AdminUserName {
+			if ctx.Update.MyChatMember.From.UserName != ctx.Config.AdminUserName {
 				ctx.Bot.Request(tgbotapi.LeaveChatConfig{ChatID: ctx.Update.MyChatMember.Chat.ID})
 			}
 

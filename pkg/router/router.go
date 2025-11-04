@@ -1,6 +1,7 @@
 package router
 
 import (
+	"telefool/internal/handlers"
 	"telefool/pkg/di"
 )
 
@@ -28,4 +29,6 @@ func (r *Router) Serve(ctx *di.UpdateContext) {
 			return
 		}
 	}
+
+	handlers.FallBackGPTHandle(ctx)
 }

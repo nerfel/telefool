@@ -4,6 +4,7 @@ import (
 	"telefool/configs"
 	"telefool/internal/user"
 	"telefool/pkg/di"
+	"telefool/pkg/memory"
 	"telefool/pkg/middleware"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -14,6 +15,7 @@ type UpdateHandlerDeps struct {
 	UserService *user.UserService
 	Bot         *tgbotapi.BotAPI
 	Router      di.RouterInterface
+	Memory      *memory.ShortTermMemory
 }
 
 type UpdateHandler struct {
@@ -21,6 +23,7 @@ type UpdateHandler struct {
 	UserService *user.UserService
 	Bot         *tgbotapi.BotAPI
 	Router      di.RouterInterface
+	Memory      *memory.ShortTermMemory
 }
 
 func NewUpdateHandler(deps *UpdateHandlerDeps) *UpdateHandler {
@@ -29,6 +32,7 @@ func NewUpdateHandler(deps *UpdateHandlerDeps) *UpdateHandler {
 		UserService: deps.UserService,
 		Bot:         deps.Bot,
 		Router:      deps.Router,
+		Memory:      deps.Memory,
 	}
 }
 
@@ -48,7 +52,8 @@ func (gmh *UpdateHandler) Handle() {
 		handle(&di.UpdateContext{
 			Update: update,
 			Bot:    gmh.Bot,
-			Conf:   gmh.Config,
+			Memory: gmh.Memory,
+			Config: gmh.Config,
 		})
 	}
 }
