@@ -2,6 +2,7 @@ package main
 
 import (
 	"telefool/configs"
+	"telefool/internal/dialog"
 	"telefool/internal/message"
 
 	"github.com/joho/godotenv"
@@ -22,5 +23,5 @@ func main() {
 		panic(err)
 	}
 
-	db.AutoMigrate(&message.Message{})
+	db.AutoMigrate(&message.Message{}, &dialog.Dialog{})
 }

@@ -1,0 +1,36 @@
+package dialog
+
+import (
+	"telefool/pkg/event"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+)
+
+type DialogServiceDeps struct {
+	EventBus         *event.Bus
+	DialogRepository *DialogRepository
+}
+
+type DialogService struct {
+	EventBus         *event.Bus
+	DialogRepository *DialogRepository
+}
+
+func NewDialogService(deps *DialogServiceDeps) *DialogService {
+	return &DialogService{
+		EventBus:         deps.EventBus,
+		DialogRepository: deps.DialogRepository,
+	}
+}
+
+func (s *DialogService) GroupEventsListen() {
+	for msg := range s.EventBus.Subscribe() {
+		if msg.Type == event.EventAddToGroup {
+			update := msg.Data.(tgbotapi.Update)
+			s.DialogRepository.AddGroup(update.MyChatMember.Chat.ID, update.MyChatMember.Chat.Title)
+		} else if msg.Type == event.EventRemoveFromGroup {
+			update := msg.Data.(tgbotapi.Update)
+			s.DialogRepository.RemoveFromGroup(update.MyChatMember.Chat.ID)
+		}
+	}
+}

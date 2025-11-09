@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"telefool/pkg/di"
+	"telefool/pkg/event"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -26,6 +27,8 @@ func PreventAddGroup(next Handler) Handler {
 				ctx.Bot.Request(tgbotapi.LeaveChatConfig{ChatID: ctx.Update.MyChatMember.Chat.ID})
 			}
 
+			ctx.EventBus.Publish(event.Event{Type: event.EventAddToGroup, Data: ctx.Update}) // side effect
+
 			return
 		}
 
@@ -34,6 +37,7 @@ func PreventAddGroup(next Handler) Handler {
 		}
 
 		if newm.Status == "left" {
+			ctx.EventBus.Publish(event.Event{Type: event.EventRemoveFromGroup, Data: ctx.Update}) // side effect
 			return
 		}
 

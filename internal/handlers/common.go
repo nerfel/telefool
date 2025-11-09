@@ -4,6 +4,7 @@ import (
 	"telefool/configs"
 	"telefool/internal/user"
 	"telefool/pkg/di"
+	"telefool/pkg/event"
 	"telefool/pkg/memory"
 	"telefool/pkg/middleware"
 
@@ -13,6 +14,7 @@ import (
 type UpdateHandlerDeps struct {
 	Config      *configs.Config
 	UserService *user.UserService
+	EventBus    *event.Bus
 	Bot         *tgbotapi.BotAPI
 	Router      di.RouterInterface
 	Memory      *memory.ShortTermMemory
@@ -21,6 +23,7 @@ type UpdateHandlerDeps struct {
 type UpdateHandler struct {
 	Config      *configs.Config
 	UserService *user.UserService
+	EventBus    *event.Bus
 	Bot         *tgbotapi.BotAPI
 	Router      di.RouterInterface
 	Memory      *memory.ShortTermMemory
@@ -30,6 +33,7 @@ func NewUpdateHandler(deps *UpdateHandlerDeps) *UpdateHandler {
 	return &UpdateHandler{
 		Config:      deps.Config,
 		UserService: deps.UserService,
+		EventBus:    deps.EventBus,
 		Bot:         deps.Bot,
 		Router:      deps.Router,
 		Memory:      deps.Memory,
@@ -50,10 +54,11 @@ func (gmh *UpdateHandler) Handle() {
 
 	for update := range gmh.Bot.ListenForWebhook("/") {
 		handle(&di.UpdateContext{
-			Update: update,
-			Bot:    gmh.Bot,
-			Memory: gmh.Memory,
-			Config: gmh.Config,
+			Update:   update,
+			Bot:      gmh.Bot,
+			EventBus: gmh.EventBus,
+			Memory:   gmh.Memory,
+			Config:   gmh.Config,
 		})
 	}
 }

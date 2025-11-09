@@ -5,9 +5,11 @@ import (
 	"log"
 	"net/http"
 	"telefool/configs"
+	"telefool/internal/dialog"
 	"telefool/internal/handlers"
 	"telefool/internal/user"
 	"telefool/pkg/db"
+	"telefool/pkg/event"
 	"telefool/pkg/memory"
 	"telefool/pkg/router"
 
@@ -56,6 +58,7 @@ func initBot(conf *configs.Config) *tgbotapi.BotAPI {
 func main() {
 	conf := configs.LoadConfig()
 	database := db.NewDb(conf)
+	eventBus := event.NewEventBus()
 
 	go initHttpServer(conf.HttpPort)
 
@@ -63,14 +66,22 @@ func main() {
 
 	// Repositories
 	userRepository := user.NewUserRepository(database)
+	dialogRepository := dialog.NewDialogRepository(database)
 
 	// Services
 	userService := user.NewUserService(userRepository)
+	dialogService := dialog.NewDialogService(&dialog.DialogServiceDeps{
+		EventBus:         eventBus,
+		DialogRepository: dialogRepository,
+	})
+
+	go dialogService.GroupEventsListen()
 
 	// GlobalHandler
 	gmh := handlers.NewUpdateHandler(&handlers.UpdateHandlerDeps{
 		Config:      conf,
 		UserService: userService,
+		EventBus:    eventBus,
 		Bot:         bot,
 		Router:      router.NewUpdateRouter(),
 		Memory:      memory.NewShortTermMemory(100),
