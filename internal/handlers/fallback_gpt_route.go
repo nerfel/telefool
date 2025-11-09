@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"strings"
+	"telefool/internal/dialog"
 	"telefool/internal/reply"
 	"telefool/pkg/di"
 	"telefool/pkg/gpt"
@@ -13,8 +14,11 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func FallBackGPTHandle(ctx *di.UpdateContext) {
+func FallBackGPTHandle(ctx *di.UpdateContext, dialogService *dialog.DialogService) {
 	if ctx.Update.Message.Chat.Type == "private" {
+		return
+	}
+	if !dialogService.IsExistingDialogEnabled(ctx.Update.Message.Chat.ID) {
 		return
 	}
 

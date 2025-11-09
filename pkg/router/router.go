@@ -1,6 +1,7 @@
 package router
 
 import (
+	"telefool/internal/dialog"
 	"telefool/internal/handlers"
 	"telefool/pkg/di"
 )
@@ -11,11 +12,12 @@ type Route struct {
 }
 
 type Router struct {
-	routes []Route
+	routes        []Route
+	DialogService *dialog.DialogService
 }
 
-func NewUpdateRouter() *Router {
-	return &Router{}
+func NewUpdateRouter(dialogService *dialog.DialogService) *Router {
+	return &Router{DialogService: dialogService}
 }
 
 func (r *Router) Register(match func(*di.UpdateContext) bool, handle func(ctx *di.UpdateContext)) {
@@ -30,5 +32,5 @@ func (r *Router) Serve(ctx *di.UpdateContext) {
 		}
 	}
 
-	handlers.FallBackGPTHandle(ctx)
+	handlers.FallBackGPTHandle(ctx, r.DialogService)
 }

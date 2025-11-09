@@ -23,6 +23,14 @@ func NewDialogService(deps *DialogServiceDeps) *DialogService {
 	}
 }
 
+func (s *DialogService) IsExistingDialogEnabled(ChatId int64) bool {
+	_, err := s.DialogRepository.GetEnabledDialog(ChatId)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 func (s *DialogService) GroupEventsListen() {
 	for msg := range s.EventBus.Subscribe() {
 		if msg.Type == event.EventAddToGroup {

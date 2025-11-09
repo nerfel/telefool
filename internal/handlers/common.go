@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"telefool/configs"
+	"telefool/internal/dialog"
 	"telefool/internal/user"
 	"telefool/pkg/di"
 	"telefool/pkg/event"
@@ -12,31 +13,34 @@ import (
 )
 
 type UpdateHandlerDeps struct {
-	Config      *configs.Config
-	UserService *user.UserService
-	EventBus    *event.Bus
-	Bot         *tgbotapi.BotAPI
-	Router      di.RouterInterface
-	Memory      *memory.ShortTermMemory
+	Config        *configs.Config
+	UserService   *user.UserService
+	DialogService *dialog.DialogService
+	EventBus      *event.Bus
+	Bot           *tgbotapi.BotAPI
+	Router        di.RouterInterface
+	Memory        *memory.ShortTermMemory
 }
 
 type UpdateHandler struct {
-	Config      *configs.Config
-	UserService *user.UserService
-	EventBus    *event.Bus
-	Bot         *tgbotapi.BotAPI
-	Router      di.RouterInterface
-	Memory      *memory.ShortTermMemory
+	Config        *configs.Config
+	UserService   *user.UserService
+	DialogService *dialog.DialogService
+	EventBus      *event.Bus
+	Bot           *tgbotapi.BotAPI
+	Router        di.RouterInterface
+	Memory        *memory.ShortTermMemory
 }
 
 func NewUpdateHandler(deps *UpdateHandlerDeps) *UpdateHandler {
 	return &UpdateHandler{
-		Config:      deps.Config,
-		UserService: deps.UserService,
-		EventBus:    deps.EventBus,
-		Bot:         deps.Bot,
-		Router:      deps.Router,
-		Memory:      deps.Memory,
+		Config:        deps.Config,
+		UserService:   deps.UserService,
+		DialogService: deps.DialogService,
+		EventBus:      deps.EventBus,
+		Bot:           deps.Bot,
+		Router:        deps.Router,
+		Memory:        deps.Memory,
 	}
 }
 
