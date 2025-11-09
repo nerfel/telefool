@@ -73,10 +73,10 @@ func GetYandexGPTOauthToken(config *configs.Config) error {
 	return nil
 }
 
-func BuildModelRequestPayload(messages []memory.Message, config *configs.Config) (*ModelRequestPayload, error) {
+func BuildModelRequestPayload(messages []memory.Message, chatPrompt string, config *configs.Config) (*ModelRequestPayload, error) {
 	systemMessage := &NeuroMessage{
 		Role: "system",
-		Text: config.YandexCloudConfig.SystemPrompt,
+		Text: chatPrompt,
 	}
 
 	neuroMessages := make([]*NeuroMessage, 0, len(messages))

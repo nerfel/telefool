@@ -32,7 +32,6 @@ type YandexCloudConfig struct {
 	GetIamTokenUrl         string
 	IamToken               string
 	ModelUri               string
-	SystemPrompt           string
 }
 
 type ModelCompletionOptions struct {
@@ -78,7 +77,6 @@ func LoadConfig() *Config {
 			GptModelRequestUrl: os.Getenv("GPT_MODEL_REQUEST_URL"),
 			GetIamTokenUrl:     os.Getenv("GET_IAM_TOKEN_URL"),
 			ModelUri:           os.Getenv("MODEL_URI"),
-			SystemPrompt:       os.Getenv("SYSTEM_PROMPT"),
 		},
 	}
 }

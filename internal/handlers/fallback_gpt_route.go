@@ -50,7 +50,13 @@ func FallBackGPTHandle(ctx *di.UpdateContext, dialogService *dialog.DialogServic
 	}
 
 	history := ctx.Memory.ChatHistory(ctx.Update.Message.Chat.ID)
-	gptRequestPayload, err := gpt.BuildModelRequestPayload(history, ctx.Config)
+	chatPrompt, err := dialogService.GetChatPrompt(ctx.Update.Message.Chat.ID)
+	if err != nil {
+		log.Println("GetChatPrompt error", err)
+		return
+	}
+
+	gptRequestPayload, err := gpt.BuildModelRequestPayload(history, chatPrompt, ctx.Config)
 
 	if err != nil {
 		log.Println("Gpt request payload error ", err)

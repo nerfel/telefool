@@ -1,6 +1,7 @@
 package dialog
 
 import (
+	"errors"
 	"telefool/pkg/event"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -41,4 +42,17 @@ func (s *DialogService) GroupEventsListen() {
 			s.DialogRepository.RemoveFromGroup(update.MyChatMember.Chat.ID)
 		}
 	}
+}
+
+func (s *DialogService) GetChatPrompt(ChatId int64) (string, error) {
+	dialog, err := s.DialogRepository.GetEnabledDialog(ChatId)
+	if err != nil {
+		return "", err
+	}
+
+	if dialog.ChatPrompt == "" {
+		return "", errors.New("empty prompt for dialog")
+	}
+
+	return dialog.ChatPrompt, nil
 }
