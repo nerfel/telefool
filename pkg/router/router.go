@@ -1,36 +1,34 @@
 package router
 
 import (
-	"telefool/internal/dialog"
 	"telefool/internal/handlers"
 	"telefool/pkg/di"
 )
 
 type Route struct {
 	Match  func(ctx *di.UpdateContext) bool
-	Handle func(ctx *di.UpdateContext)
+	Handle func(ctx *di.UpdateContext, container *di.Container)
 }
 
 type Router struct {
-	routes        []Route
-	DialogService *dialog.DialogService
+	routes []Route
 }
 
-func NewUpdateRouter(dialogService *dialog.DialogService) *Router {
-	return &Router{DialogService: dialogService}
+func NewUpdateRouter() *Router {
+	return &Router{}
 }
 
-func (r *Router) Register(match func(*di.UpdateContext) bool, handle func(ctx *di.UpdateContext)) {
+func (r *Router) Register(match func(*di.UpdateContext) bool, handle func(ctx *di.UpdateContext, container *di.Container)) {
 	r.routes = append(r.routes, Route{match, handle})
 }
 
-func (r *Router) Serve(ctx *di.UpdateContext) {
+func (r *Router) Serve(ctx *di.UpdateContext, container *di.Container) {
 	for _, route := range r.routes {
 		if route.Match(ctx) {
-			route.Handle(ctx)
+			route.Handle(ctx, container)
 			return
 		}
 	}
 
-	handlers.FallBackGPTHandle(ctx, r.DialogService)
+	handlers.FallBackGPTHandle(ctx, container)
 }

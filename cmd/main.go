@@ -9,6 +9,7 @@ import (
 	"telefool/internal/handlers"
 	"telefool/internal/user"
 	"telefool/pkg/db"
+	"telefool/pkg/di"
 	"telefool/pkg/event"
 	"telefool/pkg/memory"
 	"telefool/pkg/router"
@@ -79,13 +80,15 @@ func main() {
 
 	// GlobalHandler
 	gmh := handlers.NewUpdateHandler(&handlers.UpdateHandlerDeps{
-		Config:        conf,
-		UserService:   userService,
-		DialogService: dialogService,
-		EventBus:      eventBus,
-		Bot:           bot,
-		Router:        router.NewUpdateRouter(dialogService),
-		Memory:        memory.NewShortTermMemory(100),
+		Config:   conf,
+		EventBus: eventBus,
+		Bot:      bot,
+		Router:   router.NewUpdateRouter(),
+		Container: &di.Container{
+			DialogService: dialogService,
+			UserService:   userService,
+		},
+		Memory: memory.NewShortTermMemory(100),
 	})
 
 	gmh.Handle()

@@ -6,8 +6,8 @@ import (
 )
 
 func Logging(next Handler) Handler {
-	return func(ctx *di.UpdateContext) {
+	return func(ctx *di.UpdateContext, container *di.Container) {
 		log.Printf("message_from: [%s], message_text: %s", ctx.Update.Message.From, ctx.Update.Message.Text)
-		next(ctx)
+		next(ctx, container)
 	}
 }

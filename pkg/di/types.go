@@ -2,6 +2,8 @@ package di
 
 import (
 	"telefool/configs"
+	"telefool/internal/dialog"
+	"telefool/internal/user"
 	"telefool/pkg/event"
 	"telefool/pkg/memory"
 
@@ -15,4 +17,9 @@ type UpdateContext struct {
 	EventBus     *event.Bus
 	Memory       *memory.ShortTermMemory
 	RoutePayload any
+}
+
+type Container struct {
+	DialogService *dialog.DialogService
+	UserService   *user.UserService
 }

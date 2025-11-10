@@ -7,7 +7,7 @@ import (
 )
 
 func IsAdmin(next Handler) Handler {
-	return func(ctx *di.UpdateContext) {
+	return func(ctx *di.UpdateContext, container *di.Container) {
 		if ctx.Update.Message.From.UserName != ctx.Config.AdminUserName {
 			msg := tgbotapi.NewMessage(ctx.Update.Message.Chat.ID, "У вас не достаточно прав для данного функционала")
 			msg.ReplyToMessageID = ctx.Update.Message.MessageID
@@ -16,6 +16,6 @@ func IsAdmin(next Handler) Handler {
 			return
 		}
 
-		next(ctx)
+		next(ctx, container)
 	}
 }

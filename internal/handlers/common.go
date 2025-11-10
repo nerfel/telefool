@@ -2,8 +2,6 @@ package handlers
 
 import (
 	"telefool/configs"
-	"telefool/internal/dialog"
-	"telefool/internal/user"
 	"telefool/pkg/di"
 	"telefool/pkg/event"
 	"telefool/pkg/memory"
@@ -13,34 +11,31 @@ import (
 )
 
 type UpdateHandlerDeps struct {
-	Config        *configs.Config
-	UserService   *user.UserService
-	DialogService *dialog.DialogService
-	EventBus      *event.Bus
-	Bot           *tgbotapi.BotAPI
-	Router        di.RouterInterface
-	Memory        *memory.ShortTermMemory
+	Config    *configs.Config
+	EventBus  *event.Bus
+	Bot       *tgbotapi.BotAPI
+	Router    di.RouterInterface
+	Container *di.Container
+	Memory    *memory.ShortTermMemory
 }
 
 type UpdateHandler struct {
-	Config        *configs.Config
-	UserService   *user.UserService
-	DialogService *dialog.DialogService
-	EventBus      *event.Bus
-	Bot           *tgbotapi.BotAPI
-	Router        di.RouterInterface
-	Memory        *memory.ShortTermMemory
+	Config    *configs.Config
+	EventBus  *event.Bus
+	Bot       *tgbotapi.BotAPI
+	Router    di.RouterInterface
+	Container *di.Container
+	Memory    *memory.ShortTermMemory
 }
 
 func NewUpdateHandler(deps *UpdateHandlerDeps) *UpdateHandler {
 	return &UpdateHandler{
-		Config:        deps.Config,
-		UserService:   deps.UserService,
-		DialogService: deps.DialogService,
-		EventBus:      deps.EventBus,
-		Bot:           deps.Bot,
-		Router:        deps.Router,
-		Memory:        deps.Memory,
+		Config:    deps.Config,
+		EventBus:  deps.EventBus,
+		Bot:       deps.Bot,
+		Router:    deps.Router,
+		Container: deps.Container,
+		Memory:    deps.Memory,
 	}
 }
 
@@ -52,8 +47,8 @@ func (gmh *UpdateHandler) Handle() {
 		middleware.IgnoreEmpty,
 		middleware.Logging,
 	)
-	handle := stack(func(ctx *di.UpdateContext) {
-		gmh.Router.Serve(ctx)
+	handle := stack(func(ctx *di.UpdateContext, container *di.Container) {
+		gmh.Router.Serve(ctx, container)
 	})
 
 	for update := range gmh.Bot.ListenForWebhook("/") {
@@ -63,6 +58,6 @@ func (gmh *UpdateHandler) Handle() {
 			EventBus: gmh.EventBus,
 			Memory:   gmh.Memory,
 			Config:   gmh.Config,
-		})
+		}, gmh.Container)
 	}
 }

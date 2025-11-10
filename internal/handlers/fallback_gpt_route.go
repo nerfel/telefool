@@ -4,7 +4,6 @@ import (
 	"errors"
 	"log"
 	"strings"
-	"telefool/internal/dialog"
 	"telefool/internal/reply"
 	"telefool/pkg/di"
 	"telefool/pkg/gpt"
@@ -14,11 +13,12 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func FallBackGPTHandle(ctx *di.UpdateContext, dialogService *dialog.DialogService) {
+func FallBackGPTHandle(ctx *di.UpdateContext, container *di.Container) {
+
 	if ctx.Update.Message.Chat.Type == "private" {
 		return
 	}
-	if !dialogService.IsExistingDialogEnabled(ctx.Update.Message.Chat.ID) {
+	if !container.DialogService.IsExistingDialogEnabled(ctx.Update.Message.Chat.ID) {
 		return
 	}
 
@@ -50,7 +50,7 @@ func FallBackGPTHandle(ctx *di.UpdateContext, dialogService *dialog.DialogServic
 	}
 
 	history := ctx.Memory.ChatHistory(ctx.Update.Message.Chat.ID)
-	chatPrompt, err := dialogService.GetChatPrompt(ctx.Update.Message.Chat.ID)
+	chatPrompt, err := container.DialogService.GetChatPrompt(ctx.Update.Message.Chat.ID)
 	if err != nil {
 		log.Println("GetChatPrompt error", err)
 		return

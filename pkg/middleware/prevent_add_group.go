@@ -8,9 +8,9 @@ import (
 )
 
 func PreventAddGroup(next Handler) Handler {
-	return func(ctx *di.UpdateContext) {
+	return func(ctx *di.UpdateContext, container *di.Container) {
 		if ctx.Update.MyChatMember == nil {
-			next(ctx)
+			next(ctx, container)
 			return
 		}
 
@@ -18,7 +18,7 @@ func PreventAddGroup(next Handler) Handler {
 		newm := ctx.Update.MyChatMember.NewChatMember
 
 		if newm.User == nil || newm.User.ID != ctx.Bot.Self.ID {
-			next(ctx)
+			next(ctx, container)
 			return
 		}
 
@@ -41,6 +41,6 @@ func PreventAddGroup(next Handler) Handler {
 			return
 		}
 
-		next(ctx)
+		next(ctx, container)
 	}
 }

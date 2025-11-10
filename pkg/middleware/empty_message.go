@@ -5,11 +5,11 @@ import (
 )
 
 func IgnoreEmpty(next Handler) Handler {
-	return func(ctx *di.UpdateContext) {
+	return func(ctx *di.UpdateContext, container *di.Container) {
 		if ctx.Update.Message.Text == "" {
 			return
 		}
 
-		next(ctx)
+		next(ctx, container)
 	}
 }

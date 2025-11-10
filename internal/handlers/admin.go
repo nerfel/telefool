@@ -26,7 +26,7 @@ func CreateUserRoute(ctx *di.UpdateContext) bool {
 	return true
 }
 
-func CreateUserHandler(ctx *di.UpdateContext) {
+func CreateUserHandler(ctx *di.UpdateContext, container *di.Container) {
 	userName := ctx.RoutePayload
 	fmt.Println("route payload: ", userName)
 

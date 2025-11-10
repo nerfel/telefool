@@ -4,7 +4,7 @@ import (
 	"telefool/pkg/di"
 )
 
-type Handler func(ctx *di.UpdateContext)
+type Handler func(ctx *di.UpdateContext, container *di.Container)
 type Middleware func(Handler) Handler
 
 func Chain(middlewares ...Middleware) Middleware {
