@@ -41,6 +41,7 @@ func NewUpdateHandler(deps *UpdateHandlerDeps) *UpdateHandler {
 
 func (gmh *UpdateHandler) Handle() {
 	gmh.Router.Register(CreateUserRoute, middleware.IsAdmin(CreateUserHandler))
+	gmh.Router.Register(DialogInfoRoute, middleware.IsAdmin(DialogInfoHandler))
 
 	stack := middleware.Chain(
 		middleware.PreventAddGroup,
