@@ -44,3 +44,11 @@ func (repo *DialogRepository) GetEnabledDialog(ChatId int64) (*Dialog, error) {
 
 	return &dialog, nil
 }
+
+func (repo *DialogRepository) Update(dialog *Dialog) (*Dialog, error) {
+	result := repo.Db.Clauses(clause.Returning{}).Updates(dialog)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return dialog, nil
+}

@@ -56,3 +56,19 @@ func (s *DialogService) GetChatPrompt(ChatId int64) (string, error) {
 
 	return dialog.ChatPrompt, nil
 }
+
+func (s *DialogService) SetChatPrompt(ChatId int64, prompt string) error {
+	dialog, err := s.DialogRepository.GetEnabledDialog(ChatId)
+	if err != nil {
+		return err
+	}
+
+	dialog.ChatPrompt = prompt
+
+	dialog, err = s.DialogRepository.Update(dialog)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
