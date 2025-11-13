@@ -24,7 +24,7 @@ func FallBackGPTHandle(ctx *di.UpdateContext, container *di.Container) {
 	}
 
 	if ctx.Config.YandexCloudConfig.IamToken == "" {
-		err := gpt.GetYandexGPTOauthToken(ctx.Config)
+		err = gpt.GetYandexGPTOauthToken(ctx.Config)
 		if err != nil {
 			log.Println("Get YandexGPTOauthToken error ", err)
 			return
@@ -41,7 +41,7 @@ func FallBackGPTHandle(ctx *di.UpdateContext, container *di.Container) {
 	})
 
 	probability := dialog.Probability
-	if isMentioned(ctx.Update.Message.Text, ctx.Bot.Self.UserName) {
+	if isMentioned(ctx.Update, ctx.Bot.Self.UserName) {
 		probability = 1.0
 	}
 
@@ -95,9 +95,17 @@ func FallBackGPTHandle(ctx *di.UpdateContext, container *di.Container) {
 	ctx.Bot.Send(tgbotapi.NewMessage(ctx.Update.Message.Chat.ID, gptAnswer))
 }
 
-func isMentioned(textMessage string, botUserName string) bool {
-	textMessage = strings.ToLower(textMessage)
+func isMentioned(update tgbotapi.Update, botUserName string) bool {
+	textMessage := strings.ToLower(update.Message.Text)
 	botName := strings.ToLower(botUserName)
 
-	return strings.Contains(textMessage, botName)
+	if strings.Contains(textMessage, botName) {
+		return true
+	}
+
+	if update.Message.ReplyToMessage != nil && update.Message.ReplyToMessage.From.UserName == botUserName {
+		return true
+	}
+
+	return false
 }
