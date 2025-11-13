@@ -18,7 +18,8 @@ func FallBackGPTHandle(ctx *di.UpdateContext, container *di.Container) {
 	if ctx.Update.Message.Chat.Type == "private" {
 		return
 	}
-	if !container.DialogService.IsExistingDialogEnabled(ctx.Update.Message.Chat.ID) {
+	dialog, err := container.DialogService.GetEnabledDialogByChatId(ctx.Update.Message.Chat.ID)
+	if err != nil {
 		return
 	}
 
@@ -39,13 +40,12 @@ func FallBackGPTHandle(ctx *di.UpdateContext, container *di.Container) {
 		Timestamp:      time.Now(),
 	})
 
-	var probability float64 = 0.8
-	cooldown := 2 * time.Second
+	probability := dialog.Probability
 	if isMentioned(ctx.Update.Message.Text, ctx.Bot.Self.UserName) {
 		probability = 1.0
 	}
 
-	if !reply.ShouldReply(ctx.Update.Message.Chat.ID, probability, cooldown) {
+	if !reply.ShouldReply(ctx.Update.Message.Chat.ID, probability, dialog.Cooldown) {
 		return
 	}
 

@@ -24,6 +24,15 @@ func NewDialogService(deps *DialogServiceDeps) *DialogService {
 	}
 }
 
+func (s *DialogService) GetEnabledDialogByChatId(ChatId int64) (*Dialog, error) {
+	dialog, err := s.DialogRepository.GetEnabledDialog(ChatId)
+	if err != nil {
+		return nil, err
+	}
+
+	return dialog, nil
+}
+
 func (s *DialogService) IsExistingDialogEnabled(ChatId int64) bool {
 	_, err := s.DialogRepository.GetEnabledDialog(ChatId)
 	if err != nil {
