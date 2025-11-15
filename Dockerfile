@@ -14,7 +14,7 @@ RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /app
 
 COPY --from=builder ./app/bot .
-COPY .env.production .env
+COPY .env .env
 
 RUN adduser -D botuser
 USER botuser
